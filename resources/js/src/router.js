@@ -1,0 +1,111 @@
+/*=========================================================================================
+  File Name: router.js
+  Description: Routes for vue-router. Lazy loading is enabled.
+  Object Strucutre:
+                    path => router path
+                    name => router name
+                    component(lazy loading) => component to load
+                    meta : {
+                      rule => which user can have access (ACL)
+                      breadcrumb => Add breadcrumb to specific page
+                      pageTitle => Display title besides breadcrumb
+                    }
+  ----------------------------------------------------------------------------------------
+  Item Name: Vuesax Admin - VueJS Dashboard Admin Template
+  Author: Pixinvent
+  Author URL: http://www.themeforest.net/user/pixinvent
+==========================================================================================*/
+
+
+import Vue from 'vue'
+import Router from 'vue-router'
+import usersRoutes from './modules/users/routes'
+
+Vue.use(Router)
+
+const router = new Router({
+    mode: 'history',
+    base: '/',
+    routes: [
+      {
+          path: '',
+          component: () => import('./layouts/Front.vue'),
+          children: [
+              {
+                  path: '/',
+                  name: 'frontPage',
+                  pageTitle: 'Page title',
+                  component: () => import('./views/front/customer-form/pages/CustomerFormPage.vue'),
+              }
+          ]
+      },
+      {
+    // =============================================================================
+    // MAIN LAYOUT ROUTES
+    // =============================================================================
+        path: '/home',
+        component: () => import('./layouts/main/Main.vue'),
+        children: [
+      // =============================================================================
+      // Theme Routes
+      // =============================================================================
+          ...usersRoutes,
+          {
+            path: '/home',
+            name: 'home',
+            component: () => import('./views/Home.vue'),
+            meta: {
+              permissions: ['home'],
+              auth: true
+            }
+          },
+          {
+            path: '/403',
+            name: 'error403',
+            component: () => import('@/views/pages/Error403.vue')
+          }
+        ],
+      },
+    // =============================================================================
+    // FULL PAGE LAYOUTS
+    // =============================================================================
+      {
+        path: '',
+        component: () => import('@/layouts/full-page/FullPage.vue'),
+        children: [
+      // =============================================================================
+      // PAGES
+      // =============================================================================
+          {
+            path: '/login',
+            name: 'pageLogin',
+            component: () => import('@/views/pages/Login.vue')
+          },
+          {
+            path: '/404',
+            name: 'error404',
+            component: () => import('@/views/pages/Error404.vue')
+          },
+        ]
+      },
+      // Redirect to 404 page, if no match found
+      {
+        path: '*',
+        redirect: '/404'
+      }
+    ],
+})
+
+export default router
+
+router.beforeEach((to, from, next) => {
+  next()
+})
+
+router.afterEach((to, from, next) => {
+  const appLoading = document.getElementById('loading-bg')
+
+  if (appLoading) {
+    appLoading.style.display = "none";
+  }
+})
