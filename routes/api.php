@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,6 +28,16 @@ Route::prefix('v1')->group(function () {
             Route::get('user', 'AuthController@user');
             // Logout user from application
             Route::post('logout', 'AuthController@logout');
+        });
+    });
+
+    Route::prefix('issues')->group(function () {
+        Route::resource('/', 'Api\V1\Front\IssueController')->only('store');
+    });
+
+    Route::prefix('admin')->group(function () {
+        Route::middleware('auth:api')->group(function () {
+            Route::resource('/issues', 'Api\V1\Admin\IssueController')->only('index', 'destroy');
         });
     });
 });

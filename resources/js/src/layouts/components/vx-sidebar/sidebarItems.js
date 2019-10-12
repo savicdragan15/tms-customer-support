@@ -18,7 +18,7 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
-import usersItems from '@/modules/users/sidebarItems'
+import issuesItems from '@/modules/admin/issues/sidebarItems'
 
 export default [
   {
@@ -26,7 +26,6 @@ export default [
     name: "Home",
     slug: "home",
     icon: "HomeIcon",
-    permissions: ['home'],
   },
-  ...usersItems
+  ...issuesItems
 ]

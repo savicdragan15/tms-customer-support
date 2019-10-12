@@ -19,7 +19,7 @@
 
 import Vue from 'vue'
 import Router from 'vue-router'
-import usersRoutes from './modules/users/routes'
+import issuesRoutes from './modules/admin/issues/routes'
 
 Vue.use(Router)
 
@@ -35,7 +35,7 @@ const router = new Router({
                   path: '/',
                   name: 'frontPage',
                   pageTitle: 'Page title',
-                  component: () => import('./views/front/customer-form/pages/CustomerFormPage.vue'),
+                  component: () => import('./modules/front/customer-form/pages/CustomerFormPage.vue'),
               }
           ]
       },
@@ -49,13 +49,13 @@ const router = new Router({
       // =============================================================================
       // Theme Routes
       // =============================================================================
-          ...usersRoutes,
+          ...issuesRoutes,
           {
             path: '/home',
             name: 'home',
             component: () => import('./views/Home.vue'),
             meta: {
-              permissions: ['home'],
+              // permissions: ['home'],
               auth: true
             }
           },

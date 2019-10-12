@@ -12,5 +12,6 @@ export default {
       title: 'Login failed',
       text: 'Your Email and Password is not correct!',
     }
-  }
+  },
+  error_msg: 'An error has occurred.'
 }

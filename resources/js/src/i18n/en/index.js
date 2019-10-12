@@ -1,7 +1,7 @@
 import general from './general'
-import users from './users'
+import issues from './issues'
 
 export default {
   general,
-  users
+  issues
 }

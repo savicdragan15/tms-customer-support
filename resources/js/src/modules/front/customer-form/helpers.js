@@ -1,4 +1,4 @@
-import { SATURDAY_END_TIME, WORK_DAY_END_TIME, SATURDAY } from "./config";
+import { SATURDAY_END_TIME, WORK_DAY_END_TIME, SATURDAY, SUNDAY } from "./config";
 
 /**
  *
@@ -18,7 +18,7 @@ export function isOpen (startTime, endTime) {
     endDate.setMinutes(endTime.split(":")[1]);
 
 
-    return startDate < currentDate && endDate > currentDate
+    return startDate < currentDate && endDate > currentDate && currentDate.getDay() !== SUNDAY
 }
 
 /**
