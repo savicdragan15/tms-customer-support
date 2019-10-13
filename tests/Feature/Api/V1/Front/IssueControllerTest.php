@@ -9,12 +9,13 @@ use Tests\TestCase;
 class IssueControllerTest extends TestCase
 {
     /**
-     * A basic test example.
      * @test
      */
-    public function createIssue()
+    public function createIssue(): void
     {
         $issue = factory(Issue::class)->make()->getAttributes();
+
+        $issue['terms'] = true;
 
         $response = $this->postJson('/api/v1/issues', $issue);
 
@@ -31,7 +32,7 @@ class IssueControllerTest extends TestCase
      * @param $data
      * @param $error
      */
-    public function failToCreateIssueWithInvalidRequest($data, $error)
+    public function failToCreateIssueWithInvalidRequest($data, $error): void
     {
         $response = $this->postJson('/api/v1/issues', $data);
 

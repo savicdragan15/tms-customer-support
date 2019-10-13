@@ -156,7 +156,6 @@ export default {
                             this.resetForm()
                             this.$vs.notify({
                                 title: this.$i18n.tc('general.login.notification.title'),
-                                text: this.$i18n.tc('general.login.notification.text'),
                                 color:'success',
                                 iconPack: 'feather',
                                 icon:'icon-x-circle',

@@ -3771,23 +3771,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "IssuesList",
-  mounted: function mounted() {
-    this.getIssues();
-    console.log(this);
+  computed: {
+    currentPage: function currentPage() {
+      return this.issues ? this.issues.current_page : 1;
+    },
+    total: function total() {
+      return this.issues ? this.issues.last_page : 1;
+    }
   },
   data: function data() {
     return {
-      issues: null
+      issues: null,
+      commentsPopupActive: false,
+      selectedIssue: null
     };
   },
   methods: {
     getIssues: function getIssues() {
       var _this = this;
 
-      return _services_admin_issue_service__WEBPACK_IMPORTED_MODULE_0__["issueService"].index().then(function (res) {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      return _services_admin_issue_service__WEBPACK_IMPORTED_MODULE_0__["issueService"].index(page).then(function (res) {
         _this.issues = res.data;
       })["catch"](function () {
         _this.$vs.notify({
@@ -3803,7 +3830,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       return _services_admin_issue_service__WEBPACK_IMPORTED_MODULE_0__["issueService"].destroy(id).then(function () {
-        _this2.getIssues();
+        _this2.getIssues(_this2.currentPage);
       })["catch"](function () {
         _this2.$vs.notify({
           title: _this2.$i18n.tc('general.error_msg'),
@@ -3814,8 +3841,15 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
+    handleChangePage: function handleChangePage(page) {
+      this.getIssues(page);
+    },
     handleSort: function handleSort(key, active) {
       console.log("the user ordered: ".concat(key, " ").concat(active));
+    },
+    viewComments: function viewComments(issue) {
+      this.selectedIssue = issue;
+      this.commentsPopupActive = true;
     }
   }
 });
@@ -33627,143 +33661,219 @@ var render = function() {
     "div",
     { staticClass: "vx-row" },
     [
-      _c("vx-card", [
-        _c(
-          "div",
-          { staticClass: "vx-col w-full mb-base" },
-          [
-            _c(
-              "vs-table",
-              {
-                attrs: { sst: true, data: _vm.issues ? _vm.issues.data : [] },
-                on: { sort: _vm.handleSort },
-                scopedSlots: _vm._u([
-                  {
-                    key: "default",
-                    fn: function(ref) {
-                      var data = ref.data
-                      return _vm._l(data, function(tr, indextr) {
-                        return _c(
-                          "vs-tr",
-                          { key: indextr, attrs: { data: tr } },
-                          [
-                            _c(
-                              "vs-td",
-                              { attrs: { data: data[indextr].name } },
-                              [
-                                _vm._v(
-                                  "\n              " +
-                                    _vm._s(data[indextr].name) +
-                                    "\n            "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "vs-td",
-                              { attrs: { data: data[indextr].email } },
-                              [
-                                _vm._v(
-                                  "\n              " +
-                                    _vm._s(data[indextr].email || "-") +
-                                    "\n            "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "vs-td",
-                              { attrs: { data: data[indextr].gender } },
-                              [
-                                _vm._v(
-                                  "\n              " +
-                                    _vm._s(data[indextr].gender) +
-                                    "\n            "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "vs-td",
-                              { attrs: { data: data[indextr].order_number } },
-                              [
-                                _vm._v(
-                                  "\n              " +
-                                    _vm._s(data[indextr].order_number) +
-                                    "\n            "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "vs-td",
-                              { attrs: { data: data[indextr].callback_date } },
-                              [
-                                _vm._v(
-                                  "\n              " +
-                                    _vm._s(data[indextr].callback_date || "-") +
-                                    "\n            "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "vs-td",
-                              { attrs: { data: data[indextr].id } },
-                              [
-                                _c("vs-button", {
-                                  attrs: { size: "small", icon: "delete" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.deleteIssue(data[indextr].id)
+      _c(
+        "vx-card",
+        [
+          _c(
+            "div",
+            { staticClass: "vx-col w-full mb-base" },
+            [
+              _c(
+                "vs-table",
+                {
+                  attrs: { sst: true, data: _vm.issues ? _vm.issues.data : [] },
+                  on: { sort: _vm.handleSort },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "default",
+                      fn: function(ref) {
+                        var data = ref.data
+                        return _vm._l(data, function(tr, indextr) {
+                          return _c(
+                            "vs-tr",
+                            { key: indextr, attrs: { data: tr } },
+                            [
+                              _c(
+                                "vs-td",
+                                { attrs: { data: data[indextr].name } },
+                                [
+                                  _vm._v(
+                                    "\n              " +
+                                      _vm._s(data[indextr].name) +
+                                      "\n            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "vs-td",
+                                { attrs: { data: data[indextr].email } },
+                                [
+                                  _vm._v(
+                                    "\n              " +
+                                      _vm._s(data[indextr].email || "-") +
+                                      "\n            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "vs-td",
+                                { attrs: { data: data[indextr].gender } },
+                                [
+                                  _vm._v(
+                                    "\n              " +
+                                      _vm._s(data[indextr].gender) +
+                                      "\n            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "vs-td",
+                                { attrs: { data: data[indextr].order_number } },
+                                [
+                                  _vm._v(
+                                    "\n              " +
+                                      _vm._s(data[indextr].order_number) +
+                                      "\n            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "vs-td",
+                                {
+                                  attrs: { data: data[indextr].callback_date }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n              " +
+                                      _vm._s(
+                                        data[indextr].callback_date || "-"
+                                      ) +
+                                      "\n            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "vs-td",
+                                { attrs: { data: data[indextr].comments } },
+                                [
+                                  _c("vs-button", {
+                                    attrs: {
+                                      size: "small",
+                                      icon: "comment",
+                                      disabled: !data[indextr].comments.length
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.viewComments(data[indextr])
+                                      }
                                     }
-                                  }
-                                })
-                              ],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      })
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "vs-td",
+                                { attrs: { data: data[indextr].id } },
+                                [
+                                  _c("vs-button", {
+                                    attrs: { size: "small", icon: "delete" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteIssue(data[indextr].id)
+                                      }
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        })
+                      }
                     }
+                  ])
+                },
+                [
+                  _c("template", { slot: "header" }, [
+                    _c("h3", [_vm._v("\n            Issues\n          ")])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "template",
+                    { slot: "thead" },
+                    [
+                      _c("vs-th", [_vm._v("\n            Name\n          ")]),
+                      _vm._v(" "),
+                      _c("vs-th", [_vm._v("\n            Email\n          ")]),
+                      _vm._v(" "),
+                      _c("vs-th", [_vm._v("\n            Gender\n          ")]),
+                      _vm._v(" "),
+                      _c("vs-th", [
+                        _vm._v("\n            Order number\n          ")
+                      ]),
+                      _vm._v(" "),
+                      _c("vs-th", { attrs: { "sort-key": "callback_date" } }, [
+                        _vm._v("\n            Callback date\n          ")
+                      ]),
+                      _vm._v(" "),
+                      _c("vs-th", [
+                        _vm._v("\n            Comments\n          ")
+                      ]),
+                      _vm._v(" "),
+                      _c("vs-th", [_vm._v("\n            Actions\n          ")])
+                    ],
+                    1
+                  )
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            [
+              _c("vs-pagination", {
+                attrs: { total: _vm.total, value: _vm.currentPage },
+                on: {
+                  change: function($event) {
+                    return _vm.handleChangePage($event)
                   }
-                ])
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "vs-popup",
+            {
+              attrs: {
+                classContent: "popup-example",
+                title: "Lorem ipsum dolor sit amet",
+                active: _vm.commentsPopupActive
               },
-              [
-                _c("template", { slot: "header" }, [
-                  _c("h3", [_vm._v("\n            Issues\n          ")])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "template",
-                  { slot: "thead" },
-                  [
-                    _c("vs-th", [_vm._v("\n            Name\n          ")]),
-                    _vm._v(" "),
-                    _c("vs-th", [_vm._v("\n            Email\n          ")]),
-                    _vm._v(" "),
-                    _c("vs-th", [_vm._v("\n            Gender\n          ")]),
-                    _vm._v(" "),
-                    _c("vs-th", [
-                      _vm._v("\n            Order number\n          ")
-                    ]),
-                    _vm._v(" "),
-                    _c("vs-th", { attrs: { "sort-key": "callback_date" } }, [
-                      _vm._v("\n            Callback date\n          ")
-                    ]),
-                    _vm._v(" "),
-                    _c("vs-th", [_vm._v("\n            Actions\n          ")])
-                  ],
-                  1
-                )
-              ],
-              2
-            )
-          ],
-          1
-        )
-      ])
+              on: {
+                "update:active": function($event) {
+                  _vm.commentsPopupActive = $event
+                }
+              }
+            },
+            [
+              _vm.selectedIssue
+                ? _c(
+                    "div",
+                    _vm._l(_vm.selectedIssue.comments, function(comment) {
+                      return _c("div", [
+                        _c("p", [_vm._v(_vm._s(comment.text))])
+                      ])
+                    }),
+                    0
+                  )
+                : _vm._e()
+            ]
+          )
+        ],
+        1
+      )
     ],
     1
   )
@@ -64517,11 +64627,12 @@ var issueService = {
 };
 
 function index() {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('admin/issues');
+  var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("admin/issues?page=".concat(page));
 }
 
 function destroy(id) {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("admin/issues/".concat(id), id);
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("admin/issues/".concat(id));
 }
 
 /***/ }),

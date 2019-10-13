@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\IssueComment;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

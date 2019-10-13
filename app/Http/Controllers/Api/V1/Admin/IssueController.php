@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Console\Commands\Issues\Create;
-use App\Http\Requests\Issue\CreateRequest as CreateIssueRequest;
 use App\Models\Issue;
 use App\Repositories\Interfaces\IssueRepositoryInterface;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class IssueController extends Controller
 {
@@ -26,11 +25,13 @@ class IssueController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->issue->paginate(30);
+        return $this->issue->paginate(10, $request->get('page'), ['comments']);
     }
 
     /**

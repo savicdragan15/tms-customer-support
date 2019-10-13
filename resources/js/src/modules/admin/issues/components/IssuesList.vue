@@ -30,6 +30,10 @@
             </vs-th>
 
             <vs-th>
+              Comments
+            </vs-th>
+
+            <vs-th>
               Actions
             </vs-th>
           </template>
@@ -56,6 +60,10 @@
                 {{data[indextr].callback_date || '-'}}
               </vs-td>
 
+              <vs-td :data="data[indextr].comments">
+                <vs-button  @click="viewComments(data[indextr])" size="small" icon="comment" :disabled="!data[indextr].comments.length"></vs-button>
+              </vs-td>
+
               <vs-td :data="data[indextr].id">
                 <vs-button @click='deleteIssue(data[indextr].id)' size="small" icon="delete"></vs-button>
               </vs-td>
@@ -63,6 +71,18 @@
           </template>
         </vs-table>
       </div>
+
+      <div>
+        <vs-pagination @change="handleChangePage($event)" :total="total" :value="currentPage" ></vs-pagination>
+      </div>
+
+      <vs-popup classContent="popup-example" title="Lorem ipsum dolor sit amet" :active.sync="commentsPopupActive">
+        <div v-if="selectedIssue">
+          <div v-for="comment in selectedIssue.comments">
+            <p>{{ comment.text }}</p>
+          </div>
+        </div>
+      </vs-popup>
     </vx-card>
   </div>
 </template>
@@ -72,18 +92,24 @@ import { issueService } from '../../../../services/admin/issue.service'
 
 export default {
   name: "IssuesList",
-  mounted() {
-    this.getIssues()
-      console.log(this)
+  computed: {
+    currentPage () {
+        return this.issues ? this.issues.current_page : 1
+    },
+    total () {
+        return this.issues ? this.issues.last_page : 1
+    }
   },
   data () {
       return {
           issues: null,
+          commentsPopupActive: false,
+          selectedIssue: null
       }
   },
   methods:{
-      getIssues () {
-          return issueService.index()
+      getIssues (page = 1) {
+          return issueService.index(page)
               .then(res => {
                   this.issues =  res.data
               })
@@ -99,7 +125,7 @@ export default {
       deleteIssue (id) {
           return issueService.destroy(id)
               .then(() => {
-                  this.getIssues()
+                  this.getIssues(this.currentPage)
               })
               .catch(() => {
                   this.$vs.notify({
@@ -110,8 +136,15 @@ export default {
                       position:'top-right'})
               })
       },
+      handleChangePage (page) {
+          this.getIssues(page);
+      },
       handleSort(key, active) {
           console.log(`the user ordered: ${key} ${active}`)
+      },
+      viewComments (issue) {
+          this.selectedIssue = issue
+          this.commentsPopupActive = true
       }
   }
 }

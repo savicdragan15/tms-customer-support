@@ -11,6 +11,7 @@ class IssueRepository implements IssueRepositoryInterface
      * Get's a issue by it's ID
      *
      * @param $issueId
+     *
      * @return mixed
      */
     public function get($issueId)
@@ -32,6 +33,7 @@ class IssueRepository implements IssueRepositoryInterface
      * Save a issue.
      *
      * @param array $data
+     *
      * @return mixed
      */
     public function save(array $data)
@@ -44,6 +46,7 @@ class IssueRepository implements IssueRepositoryInterface
      *
      * @param $issueId
      * @param array $data
+     *
      * @return mixed|void
      */
     public function update($issueId, array $data)
@@ -55,6 +58,7 @@ class IssueRepository implements IssueRepositoryInterface
      * Delete a issue.
      *
      * @param $issueId
+     *
      * @return int|mixed
      */
     public function delete($issueId)
@@ -64,10 +68,13 @@ class IssueRepository implements IssueRepositoryInterface
 
     /**
      * @param int $perPage
+     * @param int $page
+     * @param array $relations
+     *
      * @return mixed
      */
-    public function paginate($perPage = 10)
+    public function paginate($perPage = 10, $page = 1, $relations = [])
     {
-        return Issue::paginate($perPage);
+        return Issue::with($relations)->paginate($perPage, $columns = ['*'], $pageName = 'page', $page = null);
     }
 }

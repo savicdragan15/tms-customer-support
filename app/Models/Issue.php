@@ -18,4 +18,12 @@ class Issue extends Model
         'description',
         'callback_date',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(IssueComment::class);
+    }
 }

@@ -3,58 +3,44 @@
 namespace App\Repositories\Interfaces;
 
 
-interface IssueRepositoryInterface
+interface IssueCommentRepositoryInterface
 {
     /**
-     * Get's a issue by it's ID
+     * Get's a comment by it's ID
      *
      * @param $issueId
      */
     public function get($issueId);
 
     /**
-     * Get's all issues.
+     * Get's all comments.
      *
      * @return mixed
      */
     public function all();
 
     /**
-     * Save a issue.
+     * Save a comment.
      *
      * @param array $data
-     *
      * @return mixed
      */
     public function save(array $data);
 
     /**
-     * Updates a issue.
+     * Updates a comment.
      *
      * @param $issueId
      * @param $data
-     *
      * @return mixed
      */
     public function update($issueId, array $data);
 
     /**
-     * Delete a issue.
+     * Delete a comment.
      *
      * @param $issueId
-     *
      * @return mixed
      */
     public function delete($issueId);
-
-    /**
-     * Pagination
-     *
-     * @param int $perPage
-     * @param int $page
-     * @param array $relations
-     *
-     * @return mixed
-     */
-    public function paginate($perPage = 10, $page = 1, $relations = []);
 }

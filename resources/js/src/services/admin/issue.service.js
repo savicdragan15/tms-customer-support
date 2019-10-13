@@ -5,10 +5,10 @@ export const issueService = {
     destroy
 }
 
-function index() {
-    return axios.get('admin/issues')
+function index (page = 1) {
+    return axios.get(`admin/issues?page=${page}`)
 }
 
-function destroy(id) {
-    return axios.delete(`admin/issues/${id}`, id)
+function destroy (id) {
+    return axios.delete(`admin/issues/${id}`)
 }

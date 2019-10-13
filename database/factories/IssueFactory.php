@@ -12,6 +12,5 @@ $factory->define(Issue::class, function (Faker $faker) {
         'gender' => 'male',
         'order_number' => $faker->numerify('#'),
         'description' => $faker->realText('200'),
-        'terms' => true,
     ];
 });
